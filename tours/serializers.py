@@ -4,8 +4,11 @@ from tours.models import Months, TourItem, Tourists
 
 class TourItemSerializer(serializers.ModelSerializer):
     dateRange = serializers.CharField(source='date_range')
-    spotsLeft = serializers.IntegerField(source='spots_left')
+    spotsLeft = serializers.SerializerMethodField()
     spotsTotal = serializers.IntegerField(source='spots_total')
+
+    def get_spotsLeft(self, obj):
+        return obj.spots_total - Tourists.objects.filter(tour_item=obj.id).count()
 
     class Meta:
         model = TourItem
@@ -28,13 +31,16 @@ class TouristsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tourists
-        fields = ['firstName', 'lastName', 'status']
+        fields = ['firstName', 'lastName', 'status', "tour_item"]
 
 class TourItemUserSerializer(serializers.ModelSerializer):
     dateRange = serializers.CharField(source='date_range')
-    spotsLeft = serializers.IntegerField(source='spots_left')
+    spotsLeft = serializers.SerializerMethodField()
     spotsTotal = serializers.IntegerField(source='spots_total')
     tourists = TouristsSerializer(many=True, read_only=True)
+
+    def get_spotsLeft(self, obj):
+        return obj.spots_total - Tourists.objects.filter(tour_item=obj.id).count()
 
     class Meta:
         model = TourItem

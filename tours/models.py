@@ -18,11 +18,10 @@ class TourItem(models.Model):
     date_range = models.CharField(max_length=20)
     spots_total = models.PositiveIntegerField()
     price = models.CharField(max_length=20)
-    spots_left = models.PositiveIntegerField()
     created_at = models.DateField()
 
     def __str__(self):
-        return f"{self.date_range}"
+        return f"{self.date_range} / {self.months}"
 
 
 class Tourists(models.Model):
